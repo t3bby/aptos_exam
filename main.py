@@ -28,6 +28,8 @@ async def main():
 
     # `4. Wallet Account`
     # load the private key from the environment variable
+    # Please dont hard code your private key in any way (dev/prod)
+    # use a .env :)
     account = Account.load_key(
         os.getenv("APTOS_PRIVATE_KEY")
     )
