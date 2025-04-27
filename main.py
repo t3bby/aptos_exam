@@ -4,12 +4,14 @@ import os
 import aptos_sdk.transactions
 import dotenv
 from aptos_sdk.account import Account
+from aptos_sdk.account_address import AccountAddress
 from aptos_sdk.async_client import RestClient, FaucetClient
 from aptos_sdk.bcs import Serializer
 from aptos_sdk.transactions import TransactionArgument, TransactionPayload
 
 # this will load the environment variables from the .env file
 dotenv.load_dotenv(".env")
+
 
 async def main():
     # `3. Create aptos instance and set it to testnet`
@@ -43,7 +45,9 @@ async def main():
         "add_participant",
         [],
         [
-            TransactionArgument("0x539f880b3da2bc33d98b5efbf611eb76b6a980b0fdb15badb537767e0767d6e3", Serializer.str),
+            TransactionArgument(
+                AccountAddress.from_str("0x539f880b3da2bc33d98b5efbf611eb76b6a980b0fdb15badb537767e0767d6e3"),
+                Serializer.struct),
             TransactionArgument("Tabby", Serializer.str),
             TransactionArgument("t3bby", Serializer.str),
             TransactionArgument("iamtabbynoodles@gmail.com", Serializer.str),
@@ -58,15 +62,13 @@ async def main():
     )
 
     # `8. Send the transaction to APTOS BLOCKCHAINNNN`
-    tx_id = await aptos_client.submit_bcs_transaction(
+    print("Waiting for transaction to propagate...")
+    tx_id = await aptos_client.submit_and_wait_for_bcs_transaction(
         signed_tx
     )
 
     # `9. Wait for the transaction to propagate`
     print(f"Transaction ID: {tx_id}")
-    print("Waiting for transaction to propagate...")
-    await aptos_client.wait_for_transaction(tx_id)
-
     print("Transaction propagated successfully!")
 
 
