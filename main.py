@@ -11,19 +11,12 @@ from aptos_sdk.transactions import TransactionArgument, TransactionPayload
 # this will load the environment variables from the .env file
 dotenv.load_dotenv(".env")
 
-
 async def main():
     # `3. Create aptos instance and set it to testnet`
 
     # create a client to interact with the Aptos blockchain
     aptos_client = RestClient(
-        "https://api.devnet.aptoslabs.com/v1"
-    )
-
-    # create a client to interact with the Aptos faucet
-    faucet_client = FaucetClient(
-        "https://faucet.devnet.aptoslabs.com",
-        aptos_client
+        "https://api.testnet.aptoslabs.com/v1"
     )
 
     # `4. Wallet Account`
@@ -43,13 +36,6 @@ async def main():
 
     # print the balance
     print(f"Account balance: {account_balance} APT")
-
-    # request some APT from the faucet if the balance is 0
-    if account_balance <= 0:
-        amount = 10
-        print(f"Requesting {amount} APT from the faucet...")
-        await faucet_client.fund_account(account_address, amount)
-        print(f"APT requested from the faucet. Please wait a few seconds for the transaction to propagate.")
 
     # `6. Build the transaction`
     tba_tx = aptos_sdk.transactions.EntryFunction.natural(
